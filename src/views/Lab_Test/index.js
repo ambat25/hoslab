@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Grid, Row, Col, Form, FormGroup, ControlLabel, Modal } from 'react-bootstrap';
 import { getTests, getTest, toggleAddTestModal, updateCurrentTest, postTest } from '../../reducers/lab_test';
+import { toggleAddResultModal, updateCurrentResult, postResult } from '../../reducers/results';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
 import { clearMessage } from '../../reducers/notifications';
@@ -28,9 +29,23 @@ class LabTest extends Component {
 	handleCloseModal = () => {
 		this.props.toggleAddTestModal(false);
 	};
+	handleCloseResultModal = () => {
+		this.props.toggleAddResultModal(false);
+	};
 	handleSave = () => {
 		this.props.postTest(this.props.current_test);
-		// this.props.toggleAddTestModal(false);
+	};
+	handleSubmitResult = () => {
+		const result = {
+			id: this.props.current_test._id,
+			tests: this.props.current_result
+		}
+		this.props.postResult(result);
+	};
+	onOpenAddResultModal = (id) => {
+		console.log(id);
+		this.props.toggleAddResultModal(true);
+		this.props.getTest(id);
 	};
 	render() {
 		return (
@@ -61,6 +76,7 @@ class LabTest extends Component {
 													patient={test.patient.name}
 													testId={test._id}
 													doctor={test.doctor.name}
+													onOpenAddResultModal={this.onOpenAddResultModal}
 												/>
 											))}
 										</Grid>
@@ -79,8 +95,9 @@ class LabTest extends Component {
 														<Row>
 															<Col sm={6}>
 																<FormGroup>
-																	<ControlLabel> Patient Id </ControlLabel>
+																	<ControlLabel> Patient </ControlLabel>
 																	<Select
+																	isSearchable
 																		value={this.props.current_test.patient}
 																		onChange={this.handlePatient}
 																		options={this.props.patients}
@@ -89,7 +106,7 @@ class LabTest extends Component {
 															</Col>
 															<Col sm={6}>
 																<FormGroup>
-																	<ControlLabel> Doctor Id </ControlLabel>
+																	<ControlLabel> Doctor </ControlLabel>
 																	<Select
 																		value={this.props.current_test.doctor}
 																		onChange={this.handleDoctor}
@@ -121,6 +138,79 @@ class LabTest extends Component {
 												</Button>
 											</Modal.Footer>
 										</Modal>
+										<Modal
+											show={this.props.add_result_modal}
+											container={this}
+											onHide={this.handleCloseResultModal}
+											aria-labelledby="contained-modal-title"
+										>
+											<Modal.Header closeButton>
+												<Modal.Title id="contained-modal-title">Submit Result</Modal.Title>
+											</Modal.Header>
+											<Modal.Body>
+												<Grid fluid>
+													<Row>
+														<Col sm={6}>
+															<label>Patient</label>
+															<p>{this.props.current_test.patient.name}</p>
+														</Col>
+														<Col sm={6}>
+															<label>Doctor</label>
+															<p>{this.props.current_test.doctor.name}</p>
+														</Col>
+														<Col sm={6}>
+															<label>Tests</label>
+															<p>
+																{this.props.current_test.tests
+																	.map((test) => test.name)
+																	.join(', ')}
+															</p>
+														</Col>
+													</Row>
+													<hr />
+													<Form>
+														<h3>Result Section</h3>
+														<Row>
+															{this.props.current_test.tests.map((test) => (
+																<Col sm={6} key={test.name}>
+																	<FormGroup>
+																		<ControlLabel>
+																			{test.name}
+																		</ControlLabel>
+																		<Select
+																			value={test.value}
+																			onChange={(selected) => { test.result = selected.value; this.props.updateCurrentResult(test)}}
+																			options={[
+																				{
+																					value: 'absent',
+																					label: 'Absent'
+																				},
+																				{
+																					value: 'partial',
+																					label: 'Partially Present'
+																				},
+																				{
+																					value: 'present',
+																					label: 'Present'
+																				}
+																			]}
+																		/>
+																	</FormGroup>
+																</Col>
+															))}
+														</Row>
+													</Form>
+												</Grid>
+											</Modal.Body>
+											<Modal.Footer>
+												<Button bsStyle="success" onClick={this.handleSubmitResult}>
+													<i className="fa fa-check" />Submit
+												</Button>
+												<Button bsStyle="primary" onClick={this.handleCloseResultModal}>
+													Close
+												</Button>
+											</Modal.Footer>
+										</Modal>
 									</div>
 								}
 							/>
@@ -132,7 +222,7 @@ class LabTest extends Component {
 	}
 }
 
-function LabCard({ testId, patient, doctor }) {
+function LabCard({ testId, patient, doctor, onOpenAddResultModal }) {
 	return (
 		<Col md={4} sm={6}>
 			<div className="lab-card">
@@ -146,8 +236,9 @@ function LabCard({ testId, patient, doctor }) {
 					<p>
 						Doctor : <b>{doctor}</b>
 					</p>
-					<p>Date : {new Date().toDateString()}</p>
-					<Button pullRight bsStyle="warning" bsSize="sm" fill>
+					<p>Date : {new Date(testId).toDateString()}</p>
+					<p>Time : {new Date(testId).toLocaleTimeString()}</p>
+					<Button pullRight bsStyle="warning" bsSize="sm" fill onClick={() => onOpenAddResultModal(testId)}>
 						Add Result
 					</Button>
 					<div className="clearfix" />
@@ -176,7 +267,9 @@ export default connect(
 			name: doctor.name
 		})),
 		message: state.notificationReducer.message,
-		messageType: state.notificationReducer.type
+		messageType: state.notificationReducer.type,
+		current_result: state.resultReducer.current_result,
+		add_result_modal: state.resultReducer.add_result_modal
 	}),
-	{ getTests, getTest, toggleAddTestModal, updateCurrentTest, postTest, clearMessage }
+	{ getTests, getTest, toggleAddTestModal, updateCurrentTest, postTest, clearMessage, toggleAddResultModal, updateCurrentResult, postResult }
 )(LabTest);

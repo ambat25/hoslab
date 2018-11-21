@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { getTests } from './reducers/lab_test';
 import { getDoctors } from './reducers/doctors';
 import { getPatients } from './reducers/patients';
+import { getResults } from './reducers/results';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 
 import indexRoutes from './routes/index.jsx';
@@ -19,6 +20,7 @@ class App extends Component {
 		this.props.getTests();
 		this.props.getDoctors();
 		this.props.getPatients();
+		this.props.getResults();
 	};
 
 	render() {
@@ -35,4 +37,4 @@ class App extends Component {
 }
 
 // export default App;
-export default connect(null, { getTests, getDoctors, getPatients })(App);
+export default connect(null, { getTests, getDoctors, getPatients, getResults })(App);
