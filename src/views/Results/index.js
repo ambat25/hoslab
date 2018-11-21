@@ -11,7 +11,7 @@ class Results extends Component {
 						<thead>
 							<tr>
 								<th>#</th>
-								<th>Test Id</th>
+								{/* <th>Test Id</th> */}
 								<th>Patient</th>
 								<th>Doctor</th>
 								<th>Tests</th>
@@ -22,7 +22,7 @@ class Results extends Component {
 							{this.props.results.map((result, index) => (
 								<tr key={result._id}>
 									<td>{index + 1}</td>
-									<td>{result._id}</td>
+									{/* <td>{result._id}</td> */}
 									<td>{result.patient.name}</td>
 									<td>{result.doctor.name}</td>
 									<td>{result.tests.map((test) => test.name).join(', ')}</td>
