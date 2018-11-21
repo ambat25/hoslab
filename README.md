@@ -1,6 +1,6 @@
 ## Hoslab Dashboard
 
->vuejs-naija
+>Hoslab Dashboard
 
 ## Build Setup
 
