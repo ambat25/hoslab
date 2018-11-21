@@ -3,12 +3,14 @@ import { showMessage } from './notifications';
 
 const FETCH_TESTS = 'FETCH_TESTS';
 const ADD_TEST = 'ADD_TEST';
+const REMOVE_TEST = 'REMOVE_TEST';
 const GET_TEST = 'GET_TEST';
 const TOGGLE_ADD_TEST_MODAL = 'TOGGLE_ADD_TEST_MODAL';
 const UPDATE_CURRENT_TEST = 'UPDATE_CURRENT_TEST';
 
 export const allTests = (tests) => ({ type: FETCH_TESTS, payload: tests });
 export const addTest = (test) => ({ type: ADD_TEST, payload: test });
+export const removeTest = (id) => ({ type: REMOVE_TEST, payload: id });
 export const getTest = (id) => ({ type: GET_TEST, payload: id });
 export const toggleAddTestModal = (open) => ({ type: TOGGLE_ADD_TEST_MODAL, payload: open });
 export const updateCurrentTest = (data) => ({ type: UPDATE_CURRENT_TEST, payload: data });
@@ -53,7 +55,6 @@ const initialState = {
 	test_types: [
 		{ value: 'typhoid', label: 'Typhoid', another: 'another one' },
 		{ value: 'malaria', label: 'Malaria' },
-		{ value: 'athsma', label: 'Athsma' },
 		{ value: 'athsma', label: 'Athsma' }
 	]
 };
@@ -64,6 +65,12 @@ export default (state = initialState, action) => {
 			return { ...state, tests: action.payload };
 		case ADD_TEST:
 			return { ...state, tests: [ action.payload, ...state.tests ], current_test: initialState.current_test };
+		case REMOVE_TEST:
+			return {
+				...state,
+				tests: state.tests.filter((test) => test._id !== action.payload),
+				current_test: initialState.current_test
+			};
 		case GET_TEST:
 			return { ...state, current_test: state.tests.find((test) => test._id === action.payload) || {} };
 		case TOGGLE_ADD_TEST_MODAL:
