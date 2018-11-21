@@ -27,6 +27,7 @@ export const getTests = () => {
 };
 
 export const postTest = (test) => {
+	test.tests = test.tests.map((t) => t.value);
 	return (dispatch) => {
 		labTestService
 			.addTest(test)
