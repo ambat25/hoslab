@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Grid, Row, Col, Form, FormGroup, ControlLabel, Table, FormControl, Modal, Button } from 'react-bootstrap';
+import { Grid, Table } from 'react-bootstrap';
 
 class Results extends Component {
 	render() {
