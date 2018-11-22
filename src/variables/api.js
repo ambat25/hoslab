@@ -1,4 +1,4 @@
-const { API_URL } = require('../config.json');
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3123';
 
 export const ALL_PATIENTS_URL = `${API_URL}/api/patients`;
 export const PATIENT_URL = `${API_URL}/api/patient`;
