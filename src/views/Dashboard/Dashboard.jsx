@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 
 class Dashboard extends Component {
 	render() {
+		const { totalTests, totalResults, totalDoctors, totalPatients } = this.props;
 		return (
 			<div className="content">
 				<Grid fluid>
@@ -12,12 +13,8 @@ class Dashboard extends Component {
 						<Col lg={3} sm={6}>
 							<StatsCard
 								bigIcon={<i className="fa fa-flask text-warning" />}
-								statsText={
-									<span>
-										Tests<small>(this week)</small>
-									</span>
-								}
-								statsValue={this.props.totalTests}
+								statsText={<span>Tests</span>}
+								statsValue={totalTests}
 								statsIcon={<i className="fa fa-refresh" />}
 								statsIconText="Updated now"
 							/>
@@ -25,12 +22,8 @@ class Dashboard extends Component {
 						<Col lg={3} sm={6}>
 							<StatsCard
 								bigIcon={<i className="pe-7s-wallet text-success" />}
-								statsText={
-									<span>
-										Results<small>(this week)</small>
-									</span>
-								}
-								statsValue="5"
+								statsText={<span>Results</span>}
+								statsValue={totalResults}
 								statsIcon={<i className="fa fa-calendar-o" />}
 								statsIconText="update"
 							/>
@@ -39,7 +32,7 @@ class Dashboard extends Component {
 							<StatsCard
 								bigIcon={<i className="fa fa-user-md text-danger" />}
 								statsText="Total Doctors"
-								statsValue={this.props.totalDoctors}
+								statsValue={totalDoctors}
 								statsIcon={<i className="fa fa-clock-o" />}
 								statsIconText="In the last hour"
 							/>
@@ -48,7 +41,7 @@ class Dashboard extends Component {
 							<StatsCard
 								bigIcon={<i className="fa fa-bed text-info" />}
 								statsText="Total Patients"
-								statsValue={this.props.totalPatients}
+								statsValue={totalPatients}
 								statsIcon={<i className="fa fa-refresh" />}
 								statsIconText="Updated now"
 							/>
@@ -63,5 +56,6 @@ class Dashboard extends Component {
 export default connect((state) => ({
 	totalDoctors: state.doctorReducer.doctors.length,
 	totalTests: state.testReducer.tests.length,
-	totalPatients: state.patientReducer.patients.length
+	totalPatients: state.patientReducer.patients.length,
+	totalResults: state.resultReducer.results.length
 }))(Dashboard);
